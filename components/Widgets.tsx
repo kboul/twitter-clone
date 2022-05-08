@@ -1,5 +1,5 @@
-import { SearchIcon } from '@heroicons/react/outline'
-import { TwitterTimelineEmbed } from 'react-twitter-embed'
+import { SearchIcon } from "@heroicons/react/outline";
+import { TwitterTimelineEmbed } from "react-twitter-embed";
 
 export default function Widgets() {
   return (
@@ -19,5 +19,5 @@ export default function Widgets() {
         options={{ height: 1000 }}
       />
     </div>
-  )
+  );
 }

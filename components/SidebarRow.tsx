@@ -1,8 +1,8 @@
-import { SVGProps } from 'react'
+import { SVGProps } from "react";
 
 interface SidebarRowProps {
-  Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element
-  title: string
+  Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  title: string;
 }
 
 export default function SidebarRow({ Icon, title }: SidebarRowProps) {
@@ -13,5 +13,5 @@ export default function SidebarRow({ Icon, title }: SidebarRowProps) {
         {title}
       </p>
     </div>
-  )
+  );
 }

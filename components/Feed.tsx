@@ -1,5 +1,5 @@
-import { RefreshIcon } from '@heroicons/react/outline'
-import TweetBox from './TweetBox'
+import { RefreshIcon } from "@heroicons/react/outline";
+import TweetBox from "./TweetBox";
 
 export default function Feed() {
   return (
@@ -13,5 +13,5 @@ export default function Feed() {
         <TweetBox />
       </div>
     </div>
-  )
+  );
 }

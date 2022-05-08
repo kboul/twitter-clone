@@ -1,10 +1,21 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { GetServerSideProps } from "next";
+import Head from "next/head";
 
-import { Feed, Sidebar } from '../components'
-import Widgets from '../components/Widgets'
+import { Feed, Sidebar } from "../components";
+import Widgets from "../components/Widgets";
+import fetchTweets from "../api/fetchTweets";
+import { Tweet } from "../typings";
 
-const Home: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const tweets = await fetchTweets();
+  return { props: { tweets } };
+};
+
+interface HomeProps {
+  tweets: Tweet[];
+}
+
+export default function Home({ tweets }: HomeProps) {
   return (
     <div className="mx-auto max-h-screen overflow-hidden lg:max-w-6xl">
       <Head>
@@ -20,7 +31,5 @@ const Home: NextPage = () => {
         <Widgets />
       </main>
     </div>
-  )
+  );
 }
-
-export default Home

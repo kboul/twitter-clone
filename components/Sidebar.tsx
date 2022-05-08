@@ -6,10 +6,10 @@ import {
   DotsCircleHorizontalIcon,
   MailIcon,
   UserIcon,
-  HomeIcon,
-} from '@heroicons/react/outline'
+  HomeIcon
+} from "@heroicons/react/outline";
 
-import SidebarRow from './SidebarRow'
+import SidebarRow from "./SidebarRow";
 
 export default function Sidebar() {
   return (
@@ -28,5 +28,5 @@ export default function Sidebar() {
       <SidebarRow Icon={UserIcon} title="Sign in" />
       <SidebarRow Icon={DotsCircleHorizontalIcon} title="More" />
     </div>
-  )
+  );
 }
