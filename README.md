@@ -2,6 +2,15 @@
 
 Twitter clone using nextjs inspired by https://www.youtube.com/watch?v=rCselwxbUgA
 
+## Create .env.local file and include the following env vars:
+
+```
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_sanity_project_id
+SANITY_API_TOKEN=your_sanity_api_token
+NEXT_PUBLIC_BASE_URL=your_localhost_url
+```
+
 ## Getting Started
 
 First, run the development server:
