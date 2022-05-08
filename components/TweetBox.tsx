@@ -3,12 +3,12 @@ import {
   EmojiHappyIcon,
   LocationMarkerIcon,
   PhotographIcon,
-  SearchCircleIcon,
-} from '@heroicons/react/outline'
-import { useState } from 'react'
+  SearchCircleIcon
+} from "@heroicons/react/outline";
+import { useState } from "react";
 
 export default function TweetBox() {
-  const [inputValue, setInputValue] = useState<string>('')
+  const [inputValue, setInputValue] = useState<string>("");
 
   return (
     <div className="flex space-x-2 p-5">
@@ -22,7 +22,7 @@ export default function TweetBox() {
         <form className="flex flex-1 flex-col">
           <input
             className="h-24 w-full text-xl outline-none placeholder:text-xl"
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={e => setInputValue(e.target.value)}
             type="text"
             placeholder="What's happening?"
             value={inputValue}
@@ -39,13 +39,12 @@ export default function TweetBox() {
 
             <button
               className="rounded-full bg-twitter px-5 py-2 font-bold text-white disabled:opacity-40"
-              disabled={!inputValue}
-            >
+              disabled={!inputValue}>
               Tweet
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
