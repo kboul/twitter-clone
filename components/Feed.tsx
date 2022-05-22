@@ -2,8 +2,11 @@ import { RefreshIcon } from "@heroicons/react/outline";
 
 import Tweet from "./Tweet";
 import TweetBox from "./TweetBox";
+import { useStore } from "../hooks";
 
 export default function Feed() {
+  const tweets = useStore(state => state.tweets);
+
   return (
     <div className="col-span-9 border-x lg:col-span-6">
       <div className="flex items-center justify-between">
@@ -16,7 +19,9 @@ export default function Feed() {
       </div>
 
       <div>
-        <Tweet />
+        {tweets.map(tweet => (
+          <Tweet key={tweet._id} tweet={tweet} />
+        ))}
       </div>
     </div>
   );

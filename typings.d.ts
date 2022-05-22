@@ -14,4 +14,23 @@ interface Tweet extends TweetBody {
   blockTweet: boolean;
 }
 
-export type { Tweet, TweetBody };
+interface CommentBody {
+  comment: string;
+  profileImg: string;
+  tweetId: string;
+  username: string;
+}
+
+interface Comment extends CommentBody {
+  _createdAt: string;
+  _id: string;
+  _rev: string;
+  tweet: {
+    _ref: string;
+    _type: "reference";
+  };
+  _type: "comment";
+  _updatedAt: string;
+}
+
+export type { Comment, Tweet, TweetBody };
