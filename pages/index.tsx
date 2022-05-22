@@ -1,6 +1,7 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 
 import { Feed, Sidebar } from "../components";
 import Widgets from "../components/Widgets";
@@ -30,6 +31,8 @@ export default function Home({ tweets }: HomeProps) {
         <title>Twitter</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <Toaster />
 
       <main className="grid grid-cols-12">
         <Sidebar />
