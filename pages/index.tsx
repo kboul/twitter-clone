@@ -1,10 +1,12 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import { useEffect } from "react";
 
 import { Feed, Sidebar } from "../components";
 import Widgets from "../components/Widgets";
 import fetchTweets from "../api/fetchTweets";
 import { Tweet } from "../typings";
+import { useStore } from "../hooks";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const tweets = await fetchTweets();
@@ -16,6 +18,12 @@ interface HomeProps {
 }
 
 export default function Home({ tweets }: HomeProps) {
+  const setGlobalState = useStore(state => state.setGlobalState);
+
+  useEffect(() => {
+    setGlobalState({ tweets });
+  }, []);
+
   return (
     <div className="mx-auto max-h-screen overflow-hidden lg:max-w-6xl">
       <Head>

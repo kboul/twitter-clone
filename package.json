@@ -13,7 +13,8 @@
     "next-sanity": "^0.5.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-twitter-embed": "^4.0.4"
+    "react-twitter-embed": "^4.0.4",
+    "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "@types/node": "17.0.4",
