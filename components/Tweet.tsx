@@ -86,7 +86,7 @@ export default function Tweet({ tweet }: TweetProps) {
       </div>
 
       {comments?.length > 0 && (
-        <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5">
+        <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5 scrollbar-hide">
           {comments.map(comment => (
             <div className="relative flex space-x-2" key={comment._id}>
               <hr className="absolute left-5 top-10 h-8 border-x border-twitter/30" />
