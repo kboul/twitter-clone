@@ -12,8 +12,7 @@ import toast from "react-hot-toast";
 import { TweetBody } from "../typings";
 import { useStore } from "../hooks";
 import fetchTweets from "../api/fetchTweets";
-
-const avatarImg = "https://links.papareact.com/gll";
+import { avatarImg } from "../constants";
 
 export default function TweetBox() {
   const { data: session } = useSession();

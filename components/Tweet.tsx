@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import TimeAgo from "react-timeago";
 import {
   ChatAlt2Icon,
@@ -6,12 +6,26 @@ import {
   SwitchHorizontalIcon,
   UploadIcon
 } from "@heroicons/react/outline";
+import toast from "react-hot-toast";
 
 import fetchComments from "../api/fetchComments";
-import { Comment, Tweet as TweetModel } from "../typings";
+import { Comment, CommentBody, Tweet as TweetModel } from "../typings";
+import { useSession } from "next-auth/react";
+import { avatarImg } from "../constants";
 
 const replaceAllSpacesWithEmptyString = (username: string) => {
   return username.replace(/\s+/g, "").toLowerCase();
+};
+
+const truncateString = (str: string, num: number) => {
+  if (str.length > num) return str.slice(0, num) + "...";
+  return str;
+};
+
+const getUsername = (name: string) => {
+  const splitted = name.split(" ");
+  console.log(splitted);
+  return `${truncateString(splitted[0], 1)} ${splitted[1]}`;
 };
 
 const iconsStyle = "h-5 w-5";
@@ -22,7 +36,11 @@ interface TweetProps {
 }
 
 export default function Tweet({ tweet }: TweetProps) {
+  const { data: session } = useSession();
+
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentBoxVisible, setCommentBoxVisible] = useState<boolean>(false);
+  const [commentBoxInputValue, setCommentBoxInputValue] = useState<string>("");
 
   const refreshComments = async () => {
     const comments: Comment[] = await fetchComments(tweet._id);
@@ -32,6 +50,36 @@ export default function Tweet({ tweet }: TweetProps) {
   useEffect(() => {
     refreshComments();
   }, []);
+
+  const handleChatIconClick = () =>
+    session && setCommentBoxVisible(prevState => !prevState);
+
+  const handleCommentSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const commentToast = toast.loading("Posting Comment...");
+
+    const comment: CommentBody = {
+      comment: commentBoxInputValue,
+      tweetId: tweet._id,
+      username: session?.user?.name || "Unknown User",
+      profileImg: session?.user?.image || avatarImg
+    };
+
+    const result = await fetch(`/api/addComment`, {
+      body: JSON.stringify(comment),
+      method: "POST"
+    });
+
+    console.log("WOOHOO we made it", result);
+    toast.success("Comment Posted!", {
+      id: commentToast
+    });
+
+    setCommentBoxInputValue("");
+    setCommentBoxVisible(false);
+    refreshComments();
+  };
 
   return (
     <div className="flex flex-col space-x-3 border-y border-gray-100 p-5">
@@ -70,7 +118,7 @@ export default function Tweet({ tweet }: TweetProps) {
       </div>
 
       <div className="mt-5 flex justify-between">
-        <div className={iconsWrapper}>
+        <div className={iconsWrapper} onClick={handleChatIconClick}>
           <ChatAlt2Icon className={iconsStyle} />
           <p>{comments.length}</p>
         </div>
@@ -85,6 +133,23 @@ export default function Tweet({ tweet }: TweetProps) {
         </div>
       </div>
 
+      {commentBoxVisible && (
+        <form className="mt-3 flex space-x-3" onSubmit={handleCommentSubmit}>
+          <input
+            className="flex-1 rounded-lg bg-gray-100 p-2 outline-none"
+            onChange={e => setCommentBoxInputValue(e.target.value)}
+            placeholder="Write a comment..."
+            type="text"
+            value={commentBoxInputValue}
+          />
+          <button
+            className="text-twitter disabled:text-gray-200"
+            disabled={!commentBoxInputValue}>
+            Post
+          </button>
+        </form>
+      )}
+
       {comments?.length > 0 && (
         <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5 scrollbar-hide">
           {comments.map(comment => (
@@ -98,7 +163,9 @@ export default function Tweet({ tweet }: TweetProps) {
 
               <div>
                 <div className="flex items-center space-x-1">
-                  <p className="mr-1 font-bold">{comment.username}</p>
+                  <p className="mr-1 font-bold" title={comment.username}>
+                    {getUsername(comment.username)}
+                  </p>
                   <p className="hidden text-sm text-gray-500 lg:inline">
                     @{replaceAllSpacesWithEmptyString(comment.username)}
                   </p>
