@@ -7,26 +7,68 @@ import {
   SearchCircleIcon
 } from "@heroicons/react/outline";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+
+import { TweetBody } from "../typings";
+import { useStore } from "../hooks";
+import fetchTweets from "../api/fetchTweets";
+
+const avatarImg = "https://links.papareact.com/gll";
 
 export default function TweetBox() {
   const { data: session } = useSession();
-  const [inputValue, setInputValue] = useState<string>("");
-  const [imageUrlBoxOpen, setImageUrlBoxOpen] = useState<boolean>(false);
-  const [uploadedImage, setUploadedIetimage] = useState<string>("");
+
+  const imageUrlBoxOpen = useStore(state => state.imageUrlBoxOpen);
+  const setGlobalState = useStore(state => state.setGlobalState);
+  const tweetInput = useStore(state => state.tweetInput);
+  const uploadedImage = useStore(state => state.uploadedImage);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoIconClick = () =>
-    setImageUrlBoxOpen(prevState => !prevState);
+    setGlobalState({ imageUrlBoxOpen: !imageUrlBoxOpen });
 
   const handleImageAddToTweet = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!imageInputRef.current?.value) return;
-    console.log(imageInputRef.current.value);
-    setUploadedIetimage(imageInputRef.current.value);
+
+    setGlobalState({
+      uploadedImage: imageInputRef.current.value,
+      imageUrlBoxOpen: false
+    });
     imageInputRef.current.value = "";
-    setImageUrlBoxOpen(false);
+  };
+
+  const postTweet = async () => {
+    const tweetBody: TweetBody = {
+      text: tweetInput,
+      username: session?.user?.name || "Unknown user",
+      profileImg: session?.user?.image || avatarImg,
+      image: uploadedImage
+    };
+    const result = await fetch(`/api/addTweet`, {
+      body: JSON.stringify(tweetBody),
+      method: "POST"
+    });
+    await result.json();
+
+    const newTweets = await fetchTweets();
+    setGlobalState({ tweets: newTweets });
+
+    toast("Tweet just added!");
+  };
+
+  const handleTweetAdd = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    postTweet();
+
+    setGlobalState({
+      tweetInput: "",
+      uploadedImage: "",
+      imageUrlBoxOpen: false
+    });
   };
 
   return (
@@ -34,17 +76,17 @@ export default function TweetBox() {
       <img
         alt=""
         className="mt-4 h-14 w-14 rounded-full object-cover"
-        src={session?.user?.image || "https://links.papareact.com/gll"}
+        src={session?.user?.image || avatarImg}
       />
 
       <div className="flex flex-1 items-center pl-2">
         <div className="flex flex-1 flex-col">
           <input
             className="h-24 w-full text-xl outline-none placeholder:text-xl"
-            onChange={e => setInputValue(e.target.value)}
+            onChange={e => setGlobalState({ tweetInput: e.target.value })}
             type="text"
             placeholder="What's happening?"
-            value={inputValue}
+            value={tweetInput}
           />
 
           <div className="flex items-center">
@@ -61,7 +103,8 @@ export default function TweetBox() {
 
             <button
               className="rounded-full bg-twitter px-5 py-2 font-bold text-white disabled:opacity-40"
-              disabled={!inputValue || !session}>
+              disabled={!tweetInput || !session}
+              onClick={handleTweetAdd}>
               Tweet
             </button>
           </div>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TimeAgo from "react-timeago";
 import {
   ChatAlt2Icon,
@@ -8,8 +8,7 @@ import {
 } from "@heroicons/react/outline";
 
 import fetchComments from "../api/fetchComments";
-import { Tweet as TweetModel } from "../typings";
-import { useStore } from "../hooks";
+import { Comment, Tweet as TweetModel } from "../typings";
 
 const replaceAllSpacesWithEmptyString = (username: string) => {
   return username.replace(/\s+/g, "").toLowerCase();
@@ -23,12 +22,11 @@ interface TweetProps {
 }
 
 export default function Tweet({ tweet }: TweetProps) {
-  const comments = useStore(state => state.comments);
-  const setGlobalState = useStore(state => state.setGlobalState);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const refreshComments = async () => {
-    const comments = await fetchComments(tweet._id);
-    setGlobalState({ comments });
+    const comments: Comment[] = await fetchComments(tweet._id);
+    setComments(comments);
   };
 
   useEffect(() => {
@@ -87,32 +85,34 @@ export default function Tweet({ tweet }: TweetProps) {
         </div>
       </div>
 
-      <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5">
-        {comments?.map(comment => (
-          <div className="relative flex space-x-2" key={comment._id}>
-            <hr className="absolute left-5 top-10 h-8 border-x border-twitter/30" />
-            <img
-              alt=""
-              className="mt-2 h-7 w-7 rounded-full object-cover"
-              src={comment.profileImg}
-            />
+      {comments?.length > 0 && (
+        <div className="my-2 mt-5 max-h-44 space-y-5 overflow-y-scroll border-t border-gray-100 p-5 scrollbar-hide">
+          {comments.map(comment => (
+            <div className="relative flex space-x-2" key={comment._id}>
+              <hr className="absolute left-5 top-10 h-8 border-x border-twitter/30" />
+              <img
+                alt=""
+                className="mt-2 h-7 w-7 rounded-full object-cover"
+                src={comment.profileImg}
+              />
 
-            <div>
-              <div className="flex items-center space-x-1">
-                <p className="mr-1 font-bold">{comment.username}</p>
-                <p className="hidden text-sm text-gray-500 lg:inline">
-                  @{replaceAllSpacesWithEmptyString(comment.username)}
-                </p>
-                <TimeAgo
-                  className="text-sm text-gray-500"
-                  date={comment._createdAt}
-                />
+              <div>
+                <div className="flex items-center space-x-1">
+                  <p className="mr-1 font-bold">{comment.username}</p>
+                  <p className="hidden text-sm text-gray-500 lg:inline">
+                    @{replaceAllSpacesWithEmptyString(comment.username)}
+                  </p>
+                  <TimeAgo
+                    className="text-sm text-gray-500"
+                    date={comment._createdAt}
+                  />
+                </div>
+                <p>{comment.comment}</p>
               </div>
-              <p>{comment.comment}</p>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
