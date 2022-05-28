@@ -33,4 +33,4 @@ interface Comment extends CommentBody {
   _updatedAt: string;
 }
 
-export type { Comment, Tweet, TweetBody };
+export type { Comment, CommentBody, Tweet, TweetBody };
