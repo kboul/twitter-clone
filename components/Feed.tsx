@@ -18,7 +18,7 @@ export default function Feed() {
   };
 
   return (
-    <div className="col-span-9 border-x lg:col-span-6">
+    <div className="col-span-9 max-h-screen overflow-y-auto border-x scrollbar-hide lg:col-span-6">
       <div className="flex items-center justify-between">
         <h1 className="p-5 pb-0 text-xl font-bold">Home</h1>
         <RefreshIcon
