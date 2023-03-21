@@ -24,7 +24,6 @@ const truncateString = (str: string, num: number) => {
 
 const getUsername = (name: string) => {
   const splitted = name.split(" ");
-  console.log(splitted);
   return `${truncateString(splitted[0], 1)} ${splitted[1]}`;
 };
 
